@@ -3,13 +3,14 @@ library(data.table)
 data_import <- function() {
   ## Choose first file in data set to set working directory
 
-  initFile <<- file.choose()
+  #initFile <- file.choose()
 
-  baseName <<- dirname(initFile)
+  #baseName <- dirname(initFile)
+  baseName <- "/home/jason/Dropbox/R/LucifR/testdata"
 
-  fileList <<- list.files(baseName)
+  fileList <- list.files(baseName)
 
-  numFiles <<- length(fileList)
+  numFiles <- length(fileList)
 
   ## preallocate data.table
 
