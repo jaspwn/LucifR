@@ -6,7 +6,7 @@ data_import <- function() {
   #initFile <- file.choose()
 
   #baseName <- dirname(initFile)
-  baseName <- "/home/jason/Dropbox/R/LucifR/testdata"
+  baseName <- "testdata"
 
   fileList <- list.files(baseName)
 
