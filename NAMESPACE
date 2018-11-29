@@ -1,1 +1,4 @@
 exportPattern("^[[:alpha:]]+")
+importFrom(data.table, fread)
+importFrom(data.table, rbindlist)
+importFrom(data.table, setkey)

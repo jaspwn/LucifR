@@ -1,11 +1,14 @@
-library(data.table)
-
 import_file <- function() {
+
+  requireNamespace("data.table", quietly = TRUE)
+
   # GLOBALS
   cn <- c("readtime", "plategroup", "well", "position", "counttime", "CPS")
 
   # generate a list of files
-  data_files <- list.files("testdata", full.names = TRUE)
+  first_file <- file.choose()
+  file_dir <- dirname(first_file)
+  data_files <- list.files(file_dir, full.names = TRUE)
   names(data_files) <- basename(data_files)
 
   # read the data
@@ -28,16 +31,18 @@ import_file <- function() {
                         idcol = "fileListID",
                         fill = TRUE)
   # mung the metadata
-  metadata[, time := as.POSIXct(strptime(
+  metadata[, time := as.POSIXct(
     paste(V6, V7),
-    format = "%d/%m/%Y %H:%M:%S"))]
+    format = "%d/%m/%Y %H:%M:%S")]
+
   metadata[, temp := as.numeric(gsub("^[^[:digit:]]+(.*)C$", "\\1", V9))]
 
   # merge the metadata
   tidy_data <- merge(raw_data,
-                     metadata[, .(fileListID, time, temp)])
+                     metadata[, c("fileListID", "time", "temp")],
+                     by = "fileListID")
 
-  # not sure what the if/else is for, this is a guess
+  #Label plates according to experimental groups
   tidy_data[, fileID := as.numeric(gsub(".*\\.", "", fileListID))]
   tidy_data[(fileID - 1) %% 5 == 0, group := "plate01"]
   tidy_data[(fileID - 2) %% 5 == 0, group := "plate02"]
@@ -47,5 +52,6 @@ import_file <- function() {
 
   setkey(tidy_data, group, time)
 
-  return(tidy_data)
+  returndata <<- tidy_data
+
 }
